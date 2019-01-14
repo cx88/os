@@ -1,7 +1,6 @@
 const fs = require('fs')
 const http = require('http')
 
-const crypto = require('./crypto')
 const config = require('./config')
 const smhttps = require('./smhttps')
 const pty = require('./pty')
