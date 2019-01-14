@@ -1,0 +1,18 @@
+{
+  "name": "rsmx",
+  "version": "0.1.0",
+  "description": "Remote Server Management",
+  "main": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cx88/rsmx.git"
+  },
+  "author": "CX <cx8128@gmail.com>",
+  "license": "MIT",
+  "bugs": "https://github.com/cx88/rsmx/issues"
+  "homepage": "https://github.com/cx88/rsmx#readme",
+  "dependencies": {
+    "ws": "^6.1.2",
+    "node-pty": "^0.7.6"
+  }
+}

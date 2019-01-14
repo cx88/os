@@ -1,2 +1,2 @@
-# os
-OpenShift Server Repository
+# rsmx
+Remote Server Management
