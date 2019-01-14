@@ -34,6 +34,7 @@ const serveStatic = folder => (req, res) => {
 
 const Server = class extends EventEmitter {
   constructor(options, listener) {
+    super()
     this.options = options
     if (listener)
       this.on('request', listener)
