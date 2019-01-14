@@ -1,18 +1,17 @@
 const fs = require('fs')
 const http = require('http')
-const WebSocket = require('ws')
 
 const crypto = require('./crypto')
 const config = require('./config')
-const smhttp = require('./smhttp')
+const smhttps = require('./smhttps')
 const pty = require('./pty')
 
 process.title = 'rsmx'
 
-const server = smhttp.createServer({
+const server = smhttps.createServer({
   key: fs.readFileSync('/root/.acme.sh/lb.arras.io/lb.arras.io.key'),
   cert: fs.readFileSync('/root/.acme.sh/lb.arras.io/lb.arras.io.cer'),
-}, smhttp.serveStatic)
+}, smhttps.serveStatic('public'))
 server.on('connection', (socket, head) => {
 
 })
@@ -20,7 +19,7 @@ server.listen(7447, () => {
   console.log('[RSMX] Manager listening on port 7447.')
 })
 
-wss.on('connection', ws => {
+/*wss.on('connection', ws => {
   ws.on('message', message => {
     console.log('received: %s', message)
   })
@@ -75,4 +74,4 @@ wss.on('connection', function connection(ws) {
   ws.send('something');
 });
 
-server.listen(8080);
+server.listen(8080);*/

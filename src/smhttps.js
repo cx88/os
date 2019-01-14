@@ -4,7 +4,7 @@ const path = require('path')
 const EventEmitter = require('events')
 
 const serveStatic = folder => (req, res) => {
-  let fileDanger = req.url || 'index.html'
+  let fileDanger = req.url.length > 1 ? req.url : 'index.html'
   let file = path.join(__dirname, '..', folder, path.resolve('/' + fileDanger))
   fs.stat(file, (err, stat) => {
     if (err) {

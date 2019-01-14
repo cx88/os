@@ -11,8 +11,5 @@
   "license": "MIT",
   "bugs": "https://github.com/cx88/rsmx/issues"
   "homepage": "https://github.com/cx88/rsmx#readme",
-  "dependencies": {
-    "ws": "^6.1.2",
-    "node-pty": "^0.7.6"
-  }
+  "dependencies": {}
 }
