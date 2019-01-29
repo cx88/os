@@ -32,33 +32,63 @@ const serveStatic = folder => (req, res) => {
   })
 }
 
-const Server = class extends EventEmitter {
-  constructor(options, listener) {
+const Socket = class extends EventEmitter {
+  constructor(socket, head) {
     super()
-    this.options = options
+    let buffer = head.toString('utf8')
+    socket.setEncoding('utf8')
+    socket.on('data', data => {
+      buffer += data
+      let parts = buffer.split('\x00')
+      buffer = parts.pop()
+      for (let part of parts)
+        try {
+          this.emit('message', JSON.parse(part))
+        } catch(e) {
+          this.close()
+        }
+    })
+    this.socket = socket
+  }
+  send(data) {
+    this.socket.write(JSON.stringify(data) + '\x00')
+  }
+  close() {
+    this.socket.end()
+  }
+}
+
+const Server = class extends EventEmitter {
+  constructor(options = {}, listener) {
+    super()
     if (listener)
       this.on('request', listener)
-  }
-  listen(...args) {
-    https.createServer(this.options, (req, res) => {
+    let server = https.createServer(options, (req, res) => {
       this.emit('request', req, res)
-    }).on('upgrade', (req, socket, head) => {
-      if (req.headers.upgrade !== 'rmsx') {
+    })
+    server.on('upgrade', (req, socket, head) => {
+      if (req.headers.upgrade !== 'xsocket') {
         socket.end('HTTP/1.1 400\r\n')
       } else {
         socket.write([
           'HTTP/1.1 101',
-          'Upgrade: rmsx',
           'Connection: Upgrade',
-        ].map(r => r + '\r\n').join(''))
-        this.emit('connection', socket, head)
+          'Upgrade: xsocket',
+          '',
+          '',
+        ].join('\r\n'))
+        this.emit('connection', new Socket(socket, head))
       }
-    }).listen(...args)
+    })
+    this.server = server
+  }
+  listen(...args) {
+    this.server.listen(...args)
   }
 }
 
 const Client = class extends EventEmitter {
-  constructor(host, port) {
+  constructor(host, port = 443) {
     super()
     if (host)
       this.connect(host, port)
@@ -69,12 +99,12 @@ const Client = class extends EventEmitter {
       host,
       headers: {
         'Connection': 'Upgrade',
-        'Upgrade': 'rmsx',
+        'Upgrade': 'xsocket',
       }
     }, res => {
       this.emit('error', new Error('Upgrade required.'), res)
     }).on('upgrade', (res, socket, head) => {
-      this.emit('open', socket, head)
+      this.emit('open', new Socket(socket, head))
     }).on('error', error => {
       this.emit('error', error)
     }).end()

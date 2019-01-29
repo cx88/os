@@ -1,18 +1,18 @@
 const fs = require('fs')
-const http = require('http')
-
-const config = require('./config')
-const smhttps = require('./smhttps')
-const pty = require('./pty')
+const xss = require('./xss')
+const Terminal = require('./pty')
+const Database = require('./database')
+const { NAME, ROOT, HOST, MODE } = require('./config')
 
 process.title = 'rsmx'
 
-const server = smhttps.createServer({
+const server = xss.createServer({
   key: fs.readFileSync('/root/.acme.sh/lb.arras.io/lb.arras.io.key'),
   cert: fs.readFileSync('/root/.acme.sh/lb.arras.io/lb.arras.io.cer'),
-}, smhttps.serveStatic('public'))
-server.on('connection', (socket, head) => {
-
+}, xss.serveStatic('public'))
+server.on('connection', xs => {
+  xs.send({ type: 'message', content: 'hello' })
+  xs.on('message', console.log)
 })
 server.listen(7447, () => {
   console.log('[RSMX] Manager listening on port 7447.')

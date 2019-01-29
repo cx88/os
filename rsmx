@@ -1,0 +1,48 @@
+#!/bin/bash
+
+cd "${0%/*}"
+
+case "$1" in
+  "run")
+    while true
+    do
+      node src/main
+      sleep 30
+    done
+    ;;
+  "start")
+    if [ -f background.pid ]; then
+      echo "Daemon already exists!"
+      exit 1
+    else
+      if [ -f all.log ]; then
+        echo "$(tail -n 500000 all.log)" > all.log
+      fi
+      nohup ./rsmx run >> all.log 2>&1 &
+      echo $! > background.pid
+      echo "Started daemon"
+    fi
+    ;;
+  "kill")
+    if [ -f background.pid ]; then
+      kill -- -$(ps -o pgid= `cat background.pid` | grep -o [0-9]*)
+      rm background.pid
+      echo "Killed daemon"
+    else
+      echo "Daemon not found!"
+      exit 1
+    fi
+    ;;
+  "log")
+    if [ -f all.log ]; then
+      tail -n 50 -f all.log
+    else
+      echo "No logs."
+    fi
+    ;;
+  *)
+    echo "Unexpected argument, try help."
+    exit 1
+    ;;
+esac
+

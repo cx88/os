@@ -1,16 +1,14 @@
 # Logs
 logs
 *.log
-npm-debug.log*
 
 # Dependency directories
 node_modules/
 
-# Optional npm cache directory
-.npm
-
-# config file
-.env
+# Ignore dot files except gitignore
+.*
+!.*/
+!.gitignore
 
 # app container
 apps/*/*

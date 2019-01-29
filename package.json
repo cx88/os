@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Remote Server Management",
   "main": "src/main.js",
+  "scripts": {
+    "start": "./rsmx run"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cx88/rsmx.git"
